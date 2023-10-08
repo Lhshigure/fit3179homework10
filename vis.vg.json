@@ -1,0 +1,87 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "title":"Covid 19 New Deaths(Jan to July 2020)",
+    "data":{
+        "url":"day_wise.csv"
+    },
+    "vconcat": [
+        {
+            "width": 400,
+            "height": 200,
+            "layer":[
+                {
+                    "mark": "area",
+                    "encoding": {
+                        "x": {
+                            "field": "Date", 
+                            "type": "temporal",
+                            "scale":{"domain":{"param": "brush"}},
+                            "axis":{"title": ""}
+                        },
+                        "y": {
+                            "field": "New deaths", "type": "quantitative"
+                        },
+                        "tooltip": [
+                            {"field": "Date", "type": "temporal"},
+                            {"field": "New deaths", "type":"quantitative"}
+                        ]
+                    
+                    }
+                }
+            ]
+            
+        },
+        {
+            "width": 400,
+            "height": 100,
+            "layer":[
+                {   
+                    
+                        "mark": "area",
+                        "params": [
+                            {
+                        "name":"brush","select":{"type": "interval",
+                        "encodings": ["x"]}
+                            }
+                        ],
+                        "encoding": {
+                            "x": {"field": "Date", "type": "temporal"},
+                            "y": {
+                            "field": "New deaths", "type": "quantitative",
+                             "axis": {"tickCount": 3, "grid": false}
+                            },
+                            "tooltip": [
+                                {"field": "Date", "type": "temporal"},
+                                {"field": "New deaths", "type":"quantitative"}
+                            ]
+                        }
+                    },
+                    {
+                        "transform": [
+                        {
+                        "window": [{"op": "rank", "as": "rank"}],
+                        "sort": [{"field": "New deaths", "order":
+                        "descending"}]
+                        },
+                        {"filter": "datum.rank == 1"},
+                        {
+                        "calculate": "'The most new deaths: ' + datum['New deaths']",
+                        "as": "text_annotation"
+                        }
+                        ],
+                        "encoding": {"text": {"field": "text_annotation"}},
+                        "mark": {
+                            "type": "text",
+                            "align": "left",
+                            "dx": 45,
+                            "dy": -40,
+                            "baseline": "middle",
+                            "fontStyle": "italic"
+                            }
+                    }
+                
+            ]
+        }
+        
+    ]
+}
